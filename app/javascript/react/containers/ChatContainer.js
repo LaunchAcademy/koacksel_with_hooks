@@ -30,13 +30,14 @@ const ChatContainer = (props) => {
         channel: "ChatChannel",
         chat_id: 1
         // currently this is hardcoded
-        // If you had router, you could do:
+        // If you had router to a show page, you could do:
         // chat_id: props.match.params["id"]
       },
       {
         connected: () => console.log("ChatChannel connected"),
         disconnected: () => console.log("ChatChannel disconnected"),
         received: data => {
+          // debugger
           // Data broadcasted from the chat channel
           console.log(data)
           handleMessageReceipt(data)
@@ -46,8 +47,8 @@ const ChatContainer = (props) => {
   }, [])
 
 
-  const handleMessageReceipt = (message) => {
-    setMessages([...messages, message])
+  const handleMessageReceipt = (messages) => {
+    setMessages(messages)
   }
 
   const handleClearForm = () => {
@@ -56,14 +57,14 @@ const ChatContainer = (props) => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    debugger
+    // debugger
     // Send info to the receive method on the back end
     App.chatChannel.send({
      message: message,
      user: user
     })
 
-    // handleClearForm();
+    handleClearForm();
   }
 
   const handleMessageChange = (event) => {
