@@ -64,26 +64,6 @@ const ChatContainer = (props) => {
       setUser(data.user)
       setMessages(data.messages)
     })
-
-    // App.chatChannel = App.cable.subscriptions.create(
-    //   // Info that is sent to the subscribed method
-    //   {
-    //     channel: "ChatChannel",
-    //     chat_id: 1
-    //     // currently this is hardcoded
-    //     // If you had router, you could do:
-    //     // chat_id: props.match.params["id"]
-    //   },
-    //   {
-    //     connected: () => console.log("ChatChannel connected"),
-    //     disconnected: () => console.log("ChatChannel disconnected"),
-    //     received: data => {
-    //       // Data broadcasted from the chat channel
-    //       console.log(data)
-    //       handleMessageReceipt(data)
-    //     }
-    //   }
-    // );
   }, [])
 
 
@@ -95,22 +75,9 @@ const ChatContainer = (props) => {
     setMessage("")
   }
 
-  // const handleFormSubmit = (event) => {
-  //   event.preventDefault();
-  //   debugger
-  //   // Send info to the receive method on the back end
-  //   App.chatChannel.send({
-  //    message: message,
-  //    user: user
-  //   })
-  //
-  //   // handleClearForm();
-  // }
-
   const handleFormSubmit = (event) => {
     event.preventDefault();
     // debugger
-
     let messagePayload = {
        message: message,
        user: user,
@@ -149,7 +116,6 @@ const ChatContainer = (props) => {
   }
 
   let messagesComponents = messages.map(message => {
-
     return(
       <Message
         key={message.message.messageId}
