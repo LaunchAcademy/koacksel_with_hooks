@@ -6,8 +6,6 @@ const App = props => {
   return(
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={ChatContainer}/>
-        <Route exact path="/chats" component={ChatContainer}/>
         <Route exact path="/chats/:id" component={ChatContainer}/>
       </Switch>
     </BrowserRouter>
