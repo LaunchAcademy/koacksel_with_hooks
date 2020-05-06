@@ -9,6 +9,8 @@ const ChatContainer = (props) => {
 
 
   useEffect(() => {
+    let chatId = props.match.params.id
+
     fetch("/api/v1/users/current", {
       credentials: 'same-origin',
       method: 'GET',
@@ -28,10 +30,7 @@ const ChatContainer = (props) => {
       // Info that is sent to the subscribed method
       {
         channel: "ChatChannel",
-        chat_id: 1
-        // currently this is hardcoded
-        // If you had router to a show page, you could do:
-        // chat_id: props.match.params["id"]
+        chat_id: chatId
       },
       {
         connected: () => console.log("ChatChannel connected"),

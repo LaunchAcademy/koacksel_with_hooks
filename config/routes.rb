@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     end
   end
 
+  get "chats/:id" => "homes#index"
 
   resources :users, only: [:index, :destroy]
 

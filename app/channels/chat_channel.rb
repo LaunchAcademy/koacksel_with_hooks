@@ -19,7 +19,7 @@ class ChatChannel < ApplicationCable::Channel
     chat.messages << new_message
     chat_key = chat.id
 
-    messages_json = chat.messages[-5..-1].map do |message|
+    messages_json = chat.messages.last(8).map do |message|
       chat_json = {
         "chat_key": chat_key,
         "message": message.body,
