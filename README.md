@@ -78,16 +78,19 @@ module ApplicationCable
       self.current_user = find_verified_user
     end
 
-    private
-      def find_verified_user
-        if verified_user = User.find_by(id: cookies.signed[:user_id])
-          verified_user
-        else
-          reject_unauthorized_connection
-        end
+    protected
+    
+    def find_verified_user
+      verified_user = User.find_by(id: cookies.signed['user.id'])
+      if verified_user && cookies.signed['user.expires_at'] > Time.now
+        verified_user
+      else
+        reject_unauthorized_connection
       end
+    end
   end
 end
+
 ```
 
 However, this code won't work out of the box, because we don't have access to our session hash the same way we do in controllers. In this case, we have to use cookies via warden_hooks to set up a `current_user` method that will be accessible across all of our channels.
