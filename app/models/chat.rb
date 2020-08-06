@@ -1,4 +1,4 @@
 class Chat < ApplicationRecord
-  has_many :messages
-
+  has_many :messages, dependent: :destroy
+  has_many :users, -> { distinct }, through: :messages
 end
