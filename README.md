@@ -10,17 +10,20 @@ $ rake db:create
 $ rake db:migrate
 $ rails server
 ```
+
 And then, in a separate terminal tab:
+
 ```
 $ yarn install
 $ yarn start
 ```
 
-#### Redis  
+#### Redis
+
 You will also probably need to have a running Redis on your system (e.g. brew install redis.)
 If you don't, tasks will likely be asynchronous, and this shouldn't cause too much issue in development, but I can't promise success in production
 
-*To add to Gemfile*
+_To add to Gemfile_
 `gem 'redis', '~> 4.0'`
 
 When you deploy, you will need to configure with Redis on your Heroku Addons.
@@ -36,6 +39,7 @@ To find Redis connection URL, run:
 heroku config | grep redis
 
 ---
+
 ### Overview
 
 For every instance of your application that spins up, an instance of Action Cable is created, using Rack to open and maintain a persistent connection, and using a channel mounted on a sub-URI of your main application to stream from certain areas of your application and broadcast to other areas.
@@ -46,27 +50,34 @@ Action Cable offers server-side code to broadcast certain content (think new mes
 Lastly, Action Cable uses Redis as a data store for transient data, syncing content across instances of your application and sending the message out to subscribers.
 
 We’ll need
-* the latest version of rails
-* redis
-* puma
+
+- the latest version of rails
+- redis
+- puma
 
 Rails ActionCable Config
-* To start this tutorial, make sure to run `rails g channel Chat`, or `rails g channel <YOUR_CHANNEL_NAME>` so that you have the necessary action cable folders.
+
+- To start this tutorial, make sure to run `rails g channel Chat`, or `rails g channel <YOUR_CHANNEL_NAME>` so that you have the necessary action cable folders.
 
 React
-- componentDidMount has the actionCable code, as well as code that is used to set the user's info in local React state
+
+- useEffect has the actionCable code, as well as code that is used to set the user's info in local React state
 
 ### Overview
-*Web Sockets*
-* WebSockets is a computer communications protocol, much like HTTP.
-* Wikipedia: "WebSocket is designed to be implemented in web browsers and web servers, but it can be used by any client or server application.  Its only relationship to HTTP is that its handshake is interpreted by HTTP servers as an Upgrade request. The WebSocket protocol enables interaction between a browser and a web server with lower overheads, facilitating real-time data transfer from and to the server. This is made possible by providing a standardized way for the server to send content to the browser without being solicited by the client, and allowing for messages to be passed back and forth while keeping the connection open. In this way, a two-way (bi-directional) ongoing conversation can take place between a browser and the server.""
+
+_Web Sockets_
+
+- WebSockets is a computer communications protocol, much like HTTP.
+- Wikipedia: "WebSocket is designed to be implemented in web browsers and web servers, but it can be used by any client or server application. Its only relationship to HTTP is that its handshake is interpreted by HTTP servers as an Upgrade request. The WebSocket protocol enables interaction between a browser and a web server with lower overheads, facilitating real-time data transfer from and to the server. This is made possible by providing a standardized way for the server to send content to the browser without being solicited by the client, and allowing for messages to be passed back and forth while keeping the connection open. In this way, a two-way (bi-directional) ongoing conversation can take place between a browser and the server.""
 
 Publisher/Subscriber
-* Pub/Sub, or Publish-Subscribe, refers to a message queue paradigm whereby senders of information (publishers), send data to an abstract class of recipients (subscribers), without specifying individual recipients
+
+- Pub/Sub, or Publish-Subscribe, refers to a message queue paradigm whereby senders of information (publishers), send data to an abstract class of recipients (subscribers), without specifying individual recipients
 
 ### Connections
-* When we connect to the app via the server, a Connection object is created that helps facilitate *authentication and authorization.*
-* Thus, in the app/channels/application_cable/connection.rb file, we can define any special logic for authorizing the user should we need. This is especially important if you want to limit connections or disconnect the user from existing connections.
+
+- When we connect to the app via the server, a Connection object is created that helps facilitate _authentication and authorization._
+- Thus, in the app/channels/application_cable/connection.rb file, we can define any special logic for authorizing the user should we need. This is especially important if you want to limit connections or disconnect the user from existing connections.
 
 ```ruby
 # app/channels/application_cable/connection.rb
@@ -95,6 +106,7 @@ end
 However, this code won't work out of the box, because we don't have access to our session hash the same way we do in controllers. In this case, we have to use cookies via warden_hooks to set up a `current_user` method that will be accessible across all of our channels.
 
 ### Signed Cookies
+
 Without going into detail, this will help us set a user's id in cookies upon logging in, remove that cookie if they have been inactive, and also remove it if they log out.
 
 Copy the code below and paste it into `config/initializers/warden_hooks.rb` (which you may need to create). If you start getting odd errors, you may need to install the `warden` gem as well.
@@ -113,10 +125,10 @@ Warden::Manager.before_logout do |user, auth, opts|
 end
 ```
 
-
 ### Channels
-* Channels are like our ActionCable controllers. A consumer (the client) can be subscribed to these channels.
-* We could then define logic for when a consumer gets subscribed, or disconnected accordingly.
+
+- Channels are like our ActionCable controllers. A consumer (the client) can be subscribed to these channels.
+- We could then define logic for when a consumer gets subscribed, or disconnected accordingly.
 
 ```ruby
 # app/channels/chat_channel.rb
@@ -129,18 +141,20 @@ end
 ```
 
 Regular information can be continually broadcast out to users via a stream. In the case of this app, whenever a user fills out our React form, the message is sent back to our ChatChannel, and then re-broadcast back out to anyone subscribed to that channel.
- This could be particularly useful for those building applications that might rely more heavily on action cable, and could probably be handled even better with Redux.
+This could be particularly useful for those building applications that might rely more heavily on action cable, and could probably be handled even better with Redux.
 
- Most of the boilerplate files can be generated with e.g. `rails g channel Chat` to create a channel named ChatChannel.
+Most of the boilerplate files can be generated with e.g. `rails g channel Chat` to create a channel named ChatChannel.
 
 Client-Side JS
-* `app/assets/javascripts/cable.js` should be provided for you in newer Rails versions. This helps establish the connection if the subscriber establishes a connection to a channel.
-*  `app/assets/javascripts/cable/subscriptions/chat.coffee` can help us define custom scripts based on what happens when connects, disconnects and receives data, however we won't need them since we are setting this up in React.
-* You will likely see this in many tutorials, and you can customize your React code accordingly.
+
+- `app/assets/javascripts/cable.js` should be provided for you in newer Rails versions. This helps establish the connection if the subscriber establishes a connection to a channel.
+- `app/assets/javascripts/cable/subscriptions/chat.coffee` can help us define custom scripts based on what happens when connects, disconnects and receives data, however we won't need them since we are setting this up in React.
+- You will likely see this in many tutorials, and you can customize your React code accordingly.
 
 ---
 
 ## Server-side Channel Configuration
+
 Finished code may end up like this.
 
 ```ruby
@@ -197,7 +211,8 @@ App.ChatChannel = App.cable.subscriptions.create(
   }
 );
 ```
-The above code establishes a connection (subscription) with a backend Channel, defined above, and saves it to the variable App.ChatChannel. It is usually best placed in the componentDidMount() function.
+
+The above code establishes a connection (subscription) with a backend Channel, defined above, and saves it to the variable App.ChatChannel. It is usually best placed in the useEffect() function.
 
 If there is only one instance of a channel, the first argument of create() can simply be a string, e.g. `App.ChatChannel = App.cable.subscriptions.create("ChatChannel", ...)`
 
@@ -214,6 +229,7 @@ App.ChatChannel.send({
   message: "Hello from an ActionCable client!"
 })
 ```
+
 ActionCable calls JSON.stringify on the argument of send(), so it must be a Javascript Object.
 
 There also appears to be a delay between when the subscription is created and when ActionCable will start handling .send() calls. Presumably sent messages will only be handled after the connection has been established, which takes some time after subscription.create() has been called. Importantly, if a message is sent while the connection is still being established, there will be no error messages or other feedback, so one might erroneously conclude that their connection or subscription has not been setup correctly or their .send() call is faulty, when in fact all one needs to do is wait for the connection to be established.
@@ -229,6 +245,7 @@ received: data => {
   this.setState( {messages: [...this.state.messages, data]} )
 }
 ```
+
 if the data was a chat message that one wanted to append to an array of messages (Which we do in koacksel :)
 
 ### Heroku
