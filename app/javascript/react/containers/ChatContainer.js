@@ -7,24 +7,28 @@ const ChatContainer = (props) => {
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState("")
 
+  const getCurrentUser = async () => {
+    try {
+      const response = await fetch("/api/v1/users/current", {
+        credentials: 'same-origin',
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      if (!response.ok) {
+        const errorMessage = `${response.status} (${response.statusText})`
+        throw new Error(errorMessage)
+      }
+      const responseBody = await response.json()
+      setUser(responseBody)
+    } catch (error) {
+      console.error(`Error in Fetch: ${error.message}`)
+    }
+  }
 
   useEffect(() => {
     let chatId = props.match.params.id
-
-    fetch("/api/v1/users/current", {
-      credentials: 'same-origin',
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    })
-    .then((response) => {
-      let { ok } = response;
-      if (ok) {
-        return response.json();
-      }
-    })
-    .then((data) => {
-      setUser(data)
-    })
+    
+    getCurrentUser()
 
     App.chatChannel = App.cable.subscriptions.create(
       // Info that is sent to the subscribed method
@@ -83,6 +87,7 @@ const ChatContainer = (props) => {
 
   return(
     <div>
+      <h1>Hello {user.handle}</h1>
       <div className='callout chat' id='chatWindow'>
         {messagesComponents}
       </div>

@@ -1,14 +1,13 @@
 Rails.application.routes.draw do
   root 'homes#index'
 
-  # possibly needed for ActionCable
+  # needed for ActionCable
   mount ActionCable.server => '/cable'
 
   namespace :api do
     namespace :v1 do
       resources :messages, only: [:create]
-      resources :users, only: [:show]
-      get "users/current" => "users#current_user"
+      get "users/current" => "users#current"
     end
   end
 
