@@ -1,29 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import Message from '../components/Message';
-import TextFieldWithSubmit from '../components/TextFieldWithSubmit';
+import Message from './Message';
+import TextFieldWithSubmit from './TextFieldWithSubmit';
 
 const ChatContainer = (props) => {
   const [user, setUser] = useState({})
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState("")
 
+  const getCurrentUser = async () => {
+    try {
+      const response = await fetch("/api/v1/users/current", {
+        credentials: 'same-origin',
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      if (!response.ok) {
+        const errorMessage = `${response.status} (${response.statusText})`
+        throw new Error(errorMessage)
+      }
+      const responseBody = await response.json()
+      setUser(responseBody)
+    } catch (error) {
+      console.error(`Error in Fetch: ${error.message}`)
+    }
+  }
 
   useEffect(() => {
-    fetch("/api/v1/users/current", {
-      credentials: 'same-origin',
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    })
-    .then((response) => {
-      let { ok } = response;
-      if (ok) {
-        return response.json();
-      }
-    })
-    .then((data) => {
-      setUser(data)
-    })
-
+    getCurrentUser()
+    
     App.chatChannel = App.cable.subscriptions.create(
       // Info that is sent to the subscribed method
       {

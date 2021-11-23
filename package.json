@@ -1,5 +1,5 @@
 {
-  "name": "koacksel_two",
+  "name": "koacksel-two",
   "private": true,
   "dependencies": {
     "@rails/webpacker": "3.5",
@@ -12,10 +12,10 @@
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/plugin-transform-destructuring": "^7.6.0",
     "@babel/plugin-transform-regenerator": "^7.4.5",
-    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.13.10",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
-    "@babel/runtime": "^7.6.2",
+    "@babel/runtime": "^7.13.10",
     "babel-loader": "^8.0.6",
     "react-router-dom": "5.0.0",
     "redbox-react": "1.6.0"
@@ -26,11 +26,12 @@
     "babel-jest": "^24.9.0",
     "fetch-mock": "~5.13.1",
     "jest": "^24.9.0",
+    "@types/jest": "^24.9.0",
     "enzyme": "~3.10.0",
     "enzyme-adapter-react-16": "~1.14.0"
   },
   "scripts": {
-    "start": "./bin/webpack-dev-server",
+    "dev:client": "./bin/webpack-dev-server",
     "test": "node_modules/.bin/jest",
     "test:dev": "node_modules/.bin/jest --notify --watch"
   },

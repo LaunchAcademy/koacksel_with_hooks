@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch} from 'react-router-dom';
-import ChatContainer from './containers/ChatContainer';
+import ChatContainer from './ChatContainer';
 
 const App = props => {
   return(
