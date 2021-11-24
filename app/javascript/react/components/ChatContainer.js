@@ -6,6 +6,7 @@ const ChatContainer = (props) => {
   const [user, setUser] = useState({})
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState("")
+  const [replyMessage, setReplyMessage] = useState(null)
 
   const getCurrentUser = async () => {
     try {
@@ -42,13 +43,19 @@ const ChatContainer = (props) => {
         disconnected: () => console.log("ChatChannel disconnected"),
         received: data => {
           // Data broadcasted from the chat channel
-          console.log(data)
-          handleMessageReceipt(data)
+          // console.log(data)
+          setReplyMessage(data)
         }
       }
     );
   }, [])
 
+  
+  useEffect(() => {
+    if (replyMessage){
+      setMessages([...messages, replyMessage])
+    }
+  }, [replyMessage])
 
   const handleMessageReceipt = (message) => {
     setMessages([...messages, message])
@@ -60,7 +67,7 @@ const ChatContainer = (props) => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    debugger
+    // debugger
     // Send info to the receive method on the back end
     App.chatChannel.send({
      message: message,
